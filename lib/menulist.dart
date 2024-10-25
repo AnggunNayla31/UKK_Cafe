@@ -67,7 +67,7 @@ class _MenuListState extends State<MenuList> {
 
     // itemCounts = List.generate(foodItems!.length , (index) => 0);
    
-  }
+  } 
 
   @override
   Widget build(BuildContext context) {
