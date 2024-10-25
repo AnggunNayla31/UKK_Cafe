@@ -1,0 +1,42 @@
+name: kasir_cafe
+description: A new Flutter project.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.1.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  intl: ^0.19.0
+  cupertino_icons: ^1.0.2
+  http: ^1.2.2
+  shared_preferences: ^2.3.2
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+
+  # Tambahkan bagian assets di sini
+  assets:
+    - assets/images/cafe.jpg
+    - assets/images/ayam geprek.jpg
+    - assets/images/bakso.jpg
+    - assets/images/soto ayam.jpg
+    - assets/images/ayam bakar.jpg
+    - assets/images/sate ayam.jpg
+    - assets/images/nasi goreng.jpg
+    - assets/images/jus jeruk.jpg
+    - assets/images/es buah.jpg
+    - assets/images/Es sodagembira.jpg
+    - assets/images/es teh.jpg
+    - assets/images/es cincau.jpg
+    - assets/images/es teler.jpg
