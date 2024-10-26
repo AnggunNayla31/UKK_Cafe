@@ -14,6 +14,8 @@ class MenuItem {
 }
 
 class MenuList extends StatefulWidget {
+  const MenuList({super.key});
+
   @override
   _MenuListState createState() => _MenuListState();
 }
@@ -35,51 +37,42 @@ class _MenuListState extends State<MenuList> {
   //   MenuItem('assets/images/es teh.jpg', 'Es Teh', 'Rp 10000', 'Teh manis dingin yang segar'),
   //   MenuItem('assets/images/es cincau.jpg', 'Es Cincau', 'Rp 12000', 'Cincau hitam dengan sirup manis'),
   //   MenuItem('assets/images/es teler.jpg', 'Es Teler', 'Rp 15000', 'Campuran buah dan susu kental manis'),
-  // ]; 
+  // ];
   List? foodItems;
- MenuService menu=MenuService();
- 
+  MenuService menu = MenuService();
+
   List<int> itemCounts = [];
-  List<MenuItem> selectedItems = [];
+  List selectedItems = [];
   int totalAmount = 0;
   String customerName = ''; // Nama pelanggan
   String tableNumber = ''; // Nomor meja
   getMenu() async {
-    var data =await menu.getMenu();
+    var data = await menu.getMenu();
     setState(() {
-      foodItems=data['data'];
+      foodItems = data['data'];
+      itemCounts = List.generate(foodItems!.length, (index) => 0);
     });
     print(foodItems);
+    print(itemCounts);
   }
 
   @override
   void initState() {
     super.initState();
     getMenu();
-    setState(() {
-          if(foodItems!=null){
-      
-      itemCounts= List.generate(foodItems!.length , (index) => 0);
-    } else{
-       itemCounts= List.generate(0 , (index) => 0);
-    };
-    });
 
     // itemCounts = List.generate(foodItems!.length , (index) => 0);
-   
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Daftar Menu',
-        style: TextStyle(
-            color: Color.fromARGB(255, 255, 255, 255))),
+            style: TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
         backgroundColor: Color(0xFF8B0000),
       ),
-      body: 
-      Column(
+      body: Column(
         children: [
           Expanded(
             child: SingleChildScrollView(
@@ -99,17 +92,20 @@ class _MenuListState extends State<MenuList> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => DaftarTransaksi(), // Mengarahkan ke DaftarTransaksi
+                                  builder: (context) =>
+                                      DaftarTransaksi(), // Mengarahkan ke DaftarTransaksi
                                 ),
                               );
                             }
                           },
-                          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                          itemBuilder: (BuildContext context) =>
+                              <PopupMenuEntry<String>>[
                             const PopupMenuItem<String>(
                               value: 'Daftar Transaksi',
                               child: Row(
                                 children: [
-                                  Icon(Icons.receipt_long, size: 20, color: Colors.black),
+                                  Icon(Icons.receipt_long,
+                                      size: 20, color: Colors.black),
                                   SizedBox(width: 8),
                                   Text('Daftar Transaksi'),
                                 ],
@@ -137,7 +133,8 @@ class _MenuListState extends State<MenuList> {
                               decoration: InputDecoration(
                                 hintText: 'Cari...',
                                 prefixIcon: Padding(
-                                  padding: const EdgeInsets.only(right: 10.0, left: 20.0),
+                                  padding: const EdgeInsets.only(
+                                      right: 10.0, left: 20.0),
                                   child: Icon(Icons.search, color: Colors.grey),
                                 ),
                                 filled: true,
@@ -146,7 +143,8 @@ class _MenuListState extends State<MenuList> {
                                   borderRadius: BorderRadius.circular(30.0),
                                   borderSide: BorderSide.none,
                                 ),
-                                contentPadding: EdgeInsets.symmetric(vertical: 8.0),
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 8.0),
                               ),
                               cursorColor: Colors.black,
                               textAlign: TextAlign.left,
@@ -157,30 +155,36 @@ class _MenuListState extends State<MenuList> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Makanan',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
-                  foodItems!=null? ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: foodItems!.length,
-                    itemBuilder: (context, index) {
-                      return menuItem(foodItems![index], index);
-                    },
-                  ):Text('data kosong'),
+                  foodItems != null
+                      ? ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: foodItems!.length,
+                          itemBuilder: (context, index) {
+                            return menuItem(foodItems![index], index);
+                          },
+                        )
+                      : Text('data kosong'),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Minuman',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -203,7 +207,6 @@ class _MenuListState extends State<MenuList> {
   }
 
   Widget menuItem(item, int index) {
-    
     return Container(
       margin: EdgeInsets.symmetric(vertical: 12.0),
       decoration: BoxDecoration(
@@ -223,8 +226,8 @@ class _MenuListState extends State<MenuList> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.network('${baseUrlService().baseUrl}/'+
-                item['menu_image_name'],
+              child: Image.network(
+                '${baseUrlService().baseUrl}/' + item['menu_image_name'],
                 width: 80,
                 height: 60,
                 fit: BoxFit.cover,
@@ -241,11 +244,12 @@ class _MenuListState extends State<MenuList> {
                   children: [
                     Text(
                       item['menu_name'],
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 4),
-                    Text("Rp. "+
-                      item['price'].toString(),
+                    Text(
+                      "Rp. ${item['price']}",
                       style: TextStyle(color: Colors.green, fontSize: 14),
                     ),
                     SizedBox(height: 8),
@@ -262,7 +266,7 @@ class _MenuListState extends State<MenuList> {
                         itemCounts[index]--;
                         if (itemCounts[index] == 0) {
                           selectedItems.remove(item);
-                          totalAmount -= int.parse(item['price'].replaceAll('Rp ', '').replaceAll(',', ''));
+                          totalAmount -= int.parse(item['price'].toString());
                         }
                       }
                     });
@@ -280,17 +284,15 @@ class _MenuListState extends State<MenuList> {
                   ),
                 ),
                 SizedBox(width: 8),
-                itemCounts==true?
-                Text(itemCounts[index].toString(), style: TextStyle(fontSize: 16)):Text("0"),
-               
+                Text(itemCounts[index].toString(),
+                    style: TextStyle(fontSize: 16)),
                 SizedBox(width: 8),
-                
                 GestureDetector(
                   onTap: () {
                     setState(() {
                       itemCounts[index]++;
                       selectedItems.add(item);
-                      totalAmount += int.parse(item['price'].replaceAll('Rp ', '').replaceAll(',', ''));
+                      totalAmount += int.parse(item['price'].toString());
                     });
                   },
                   child: Container(
@@ -313,7 +315,7 @@ class _MenuListState extends State<MenuList> {
     );
   }
 
-  _showMenuDetailDialog( item) {
+  _showMenuDetailDialog(item) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -326,8 +328,8 @@ class _MenuListState extends State<MenuList> {
               Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.network('${baseUrlService().baseUrl}/'+
-                    item['menu_image_name'],
+                  child: Image.network(
+                    '${baseUrlService().baseUrl}/' + item['menu_image_name'],
                     width: 250,
                     height: 180,
                     fit: BoxFit.cover,
@@ -397,11 +399,11 @@ class _MenuListState extends State<MenuList> {
 
     for (var item in selectedItems) {
       // Menghitung jumlah item yang sama
-      itemCounts[item.title] = (itemCounts[item.title] ?? 0) + 1;
+      itemCounts[item["menu_name"]] = (itemCounts[item["menu_name"]] ?? 0) + 1;
     }
 
     // Menghapus item dari daftar jika jumlahnya 0
-    selectedItems.removeWhere((item) => itemCounts[item.title] == 0);
+    selectedItems.removeWhere((item) => itemCounts[item["menu_name"]] == 0);
 
     // Jika tidak ada item yang dipilih, kembalikan widget kosong
     if (selectedItems.isEmpty) {
@@ -427,7 +429,7 @@ class _MenuListState extends State<MenuList> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Nama Pelanggan
-            Container(
+            SizedBox(
               width: double.infinity,
               child: Text(
                 'Nama Pelanggan : $customerName',
@@ -437,7 +439,7 @@ class _MenuListState extends State<MenuList> {
             SizedBox(height: 8),
 
             // Nomor Meja
-            Container(
+            SizedBox(
               width: double.infinity,
               child: Text(
                 'Nomor Meja : $tableNumber',
@@ -459,31 +461,38 @@ class _MenuListState extends State<MenuList> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start, // Gak terlalu rapat
+                  mainAxisAlignment:
+                      MainAxisAlignment.start, // Gak terlalu rapat
                   children: [
                     // Nama menu
                     Text(
                       itemTitle,
                       style: TextStyle(fontSize: 14),
                     ),
-                    SizedBox(width: 8), // Sedikit jarak antara nama menu dan jumlah
+                    SizedBox(
+                        width: 8), // Sedikit jarak antara nama menu dan jumlah
 
                     // Menampilkan jumlah pesanan
                     Text(
-                      itemCounts[itemTitle] == 1 ? '1x' : '${itemCounts[itemTitle]}x', // Format: 2x bukan x2
+                      itemCounts[itemTitle] == 1
+                          ? '1x'
+                          : '${itemCounts[itemTitle]}x', // Format: 2x bukan x2
                       style: TextStyle(fontWeight: FontWeight.normal),
                     ),
-                    Spacer(),  // Memberi jarak antara jumlah dan harga
+                    Spacer(), // Memberi jarak antara jumlah dan harga
 
                     // Harga per item
                     Text(
-                      '${selectedItems.firstWhere((item) => item.title == itemTitle).price}',
+                      selectedItems
+                          .firstWhere(
+                              (item) => item["menu_name"] == itemTitle)["price"]
+                          .toString(),
                       style: TextStyle(fontWeight: FontWeight.normal),
                     ),
                   ],
                 ),
               );
-            }).toList(),
+            }),
 
             SizedBox(height: 16),
 
@@ -503,7 +512,8 @@ class _MenuListState extends State<MenuList> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
                 ),
                 child: Text(
                   'Pesan Sekarang',
@@ -511,11 +521,9 @@ class _MenuListState extends State<MenuList> {
                 ),
               ),
             )
-
           ],
         ),
       ),
     );
   }
-
 }
