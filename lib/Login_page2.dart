@@ -77,130 +77,132 @@ class _LoginPage2State extends State<Login_Page2> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Welcome Wikusama Cafe',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+ @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text(
+        'Welcome Wikusama Cafe',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 27, // Ukuran font diperbesar menjadi 27
+          fontWeight: FontWeight.bold,
         ),
-        backgroundColor: Color(0xFF8B0000), // Warna merah matang untuk AppBar
-        titleSpacing: 0,
-        leading: SizedBox(), // Menghilangkan tanda panah (back button) jika ada
       ),
-      body: Form(
-        key: formKey,
-        child: AnimatedOpacity(
-          opacity: _opacity,
-          duration: Duration(seconds: 1),
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/cafe.jpg'), // Path gambar background
-                fit: BoxFit.fill,
-              ),
+      backgroundColor: Color(0xFF8B0000), // Warna merah matang untuk AppBar
+      titleSpacing: 0,
+      centerTitle: true, // Menempatkan judul di tengah
+      leading: SizedBox(), // Menghilangkan tanda panah (back button) jika ada
+    ),
+    body: Form(
+      key: formKey,
+      child: AnimatedOpacity(
+        opacity: _opacity,
+        duration: Duration(seconds: 1),
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/cafe.jpg'), // Path gambar background
+              fit: BoxFit.fill,
             ),
-            child: Center(
-              child: Container(
-                padding: EdgeInsets.all(20.0),
-                margin: EdgeInsets.symmetric(horizontal: 16.0),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(30.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 10.0,
-                      offset: Offset(0, 4),
+          ),
+          child: Center(
+            child: Container(
+              padding: EdgeInsets.all(20.0),
+              margin: EdgeInsets.symmetric(horizontal: 16.0),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(30.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10.0,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Create Your Account',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Create Your Account',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 20),
-                    // Kolom input username
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: TextFormField(
-                        controller: _usernameController,
-                        decoration: InputDecoration(
-                          labelText: 'Username',
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        validator: (value) => value!.isEmpty ? 'Username tidak boleh kosong' : null,
-                      ),
-                    ),
-                    // Kolom input password
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: TextFormField(
-                        controller: _passwordController,
-                        obscureText: _obscurePassword,
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                              color: Colors.black,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
-                            },
-                          ),
-                        ),
-                        validator: (value) => value!.isEmpty ? 'Password tidak boleh kosong' : null,
-                      ),
-                    ),
-                    SizedBox(height: 35),
-                    // Tombol login
-                    ElevatedButton(
-                      onPressed: _validateInput,
-                      child: Text(
-                        'Login',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF8B0000),
-                        shape: RoundedRectangleBorder(
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  // Kolom input username
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: TextFormField(
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                        labelText: 'Username',
+                        filled: true,
+                        border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
+                          borderSide: BorderSide.none,
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),
                       ),
+                      validator: (value) => value!.isEmpty ? 'Username tidak boleh kosong' : null,
                     ),
-                    Text(message),
-                  ],
-                ),
+                  ),
+                  // Kolom input password
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: TextFormField(
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                            color: Colors.black,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
+                      ),
+                      validator: (value) => value!.isEmpty ? 'Password tidak boleh kosong' : null,
+                    ),
+                  ),
+                  SizedBox(height: 35),
+                  // Tombol login
+                  ElevatedButton(
+                    onPressed: _validateInput,
+                    child: Text(
+                      'Login',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF8B0000),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),
+                    ),
+                  ),
+                  Text(message),
+                ],
               ),
             ),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 }

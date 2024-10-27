@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Untuk format tanggal
+import 'package:intl/intl.dart';
+import 'package:kasir_cafe/login_page2.dart'; // Untuk format tanggal
 
 class DaftarTransaksi extends StatefulWidget {
   @override
@@ -441,147 +442,180 @@ class _DaftarTransaksiState extends State<DaftarTransaksi> {
       },
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: GestureDetector(
-          onTap: () {
-            // Aksi yang diinginkan ketika judul ditekan
-            // Misalnya, mengatur ulang tanggal yang dipilih atau melakukan refresh
-            setState(() {
-              _selectedDate = null; // Mengatur ulang tanggal
-            });
-          },
-          child: Text('Daftar Transaksi',
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: GestureDetector(
+        onTap: () {
+          setState(() {
+            _selectedDate = null; // Mengatur ulang tanggal
+          });
+        },
+        child: Text(
+          'Daftar Transaksi',
           style: TextStyle(
-            color: Color.fromARGB(255, 255, 255, 255),),
-          )
-           // Judul yang bisa ditekan
+            color: Color.fromARGB(255, 255, 255, 255),
+          ),
         ),
-        backgroundColor: Color(0xFF8B0000),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                SizedBox(width: 10),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => _selectDate(context),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: Color(0xFF8B0000)),
-                      ),
-                      child: Row(
-                        children: [
-                          SizedBox(width: 8), // Memberikan jarak di sebelah kiri ikon kalender
-                          Icon(Icons.calendar_today, color: Color(0xFF8B0000)),
-                          SizedBox(width: 15), // Jarak antara ikon dan teks
-                          Text(
-                            _selectedDate == null
-                                ? 'Pilih Tanggal'
-                                : DateFormat('dd-MM-yyyy').format(_selectedDate!),
-                            style: TextStyle(fontSize: 16, color: Colors.black),
-                          ),
-                        ],
-                      ),
+      backgroundColor: Color(0xFF8B0000),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0), // Menambahkan padding kanan
+          child: PopupMenuButton<String>(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            icon: Icon(Icons.account_circle, color: Colors.white), // Ikon profil
+            onSelected: (String result) {
+              if (result == 'Logout') {
+                // Logika untuk logout dan mengarahkan ke halaman login
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Login_Page2(), // Ganti dengan halaman login yang sesuai
+                  ),
+                );
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'Logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout, size: 20, color: Colors.black),
+                    SizedBox(width: 8),
+                    Text('Logout'),
+                  ],
+                ),
+              ),
+            ],
+            offset: Offset(0, 50),
+          ),
+        ),
+      ],
+    ),
+    body: Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              SizedBox(width: 10),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => _selectDate(context),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: Color(0xFF8B0000)),
+                    ),
+                    child: Row(
+                      children: [
+                        SizedBox(width: 8),
+                        Icon(Icons.calendar_today, color: Color(0xFF8B0000)),
+                        SizedBox(width: 15),
+                        Text(
+                          _selectedDate == null
+                              ? 'Pilih Tanggal'
+                              : DateFormat('dd-MM-yyyy').format(_selectedDate!),
+                          style: TextStyle(fontSize: 16, color: Colors.black),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
-              ],
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: _filteredTransaksiList().asMap().entries.map((entry) {
-                    int index = entry.key;
-                    var transaksi = entry.value;
-                    Color statusColor = transaksi['status'] == 'Lunas' ? Colors.green : Colors.red;
+              ),
+              SizedBox(width: 10),
+            ],
+          ),
+          SizedBox(height: 20),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: _filteredTransaksiList().asMap().entries.map((entry) {
+                  int index = entry.key;
+                  var transaksi = entry.value;
+                  Color statusColor = transaksi['status'] == 'Lunas' ? Colors.green : Colors.red;
 
-                    return GestureDetector(
-                      onTap: () => _showDetails(context, transaksi),
-                      child: Card(
-                        elevation: 5,
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Text('${index + 1}. ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), // Angka bold
-                                        Text(
-                                          '${transaksi['namaPelanggan']}',
-                                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), // Nama pelanggan bold
-                                        ),
-                                        SizedBox(width: 4), // Ubah jarak menjadi lebih kecil
-                                        Text(
-                                          ' - ', // Tanda penghubung
-                                          style: TextStyle(color: Colors.black, fontSize: 14), // Tanda penghubung hitam
-                                        ),
-                                        SizedBox(width: 4), // Ubah jarak menjadi lebih kecil
-                                        Text(
-                                          '${transaksi['status']}',
-                                          style: TextStyle(color: statusColor, fontSize: 14, fontWeight: FontWeight.bold), // Status
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      'Tanggal: ${transaksi['tanggal']}',
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                                    SizedBox(height: 2),
-                                    Text(
-                                      'No Meja: ${transaksi['nomorMeja']}',
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                                    SizedBox(height: 2),
-                                    Text(
-                                      'Kasir: ${transaksi['Kasir']}',
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                                  ],
-                                ),
+                  return GestureDetector(
+                    onTap: () => _showDetails(context, transaksi),
+                    child: Card(
+                      elevation: 5,
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text('${index + 1}. ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), // Angka bold
+                                      Text(
+                                        '${transaksi['namaPelanggan']}',
+                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), // Nama pelanggan bold
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        ' - ', // Tanda penghubung
+                                        style: TextStyle(color: Colors.black, fontSize: 14), // Tanda penghubung hitam
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        '${transaksi['status']}',
+                                        style: TextStyle(color: statusColor, fontSize: 14, fontWeight: FontWeight.bold), // Status
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    'Tanggal: ${transaksi['tanggal']}',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  SizedBox(height: 2),
+                                  Text(
+                                    'No Meja: ${transaksi['nomorMeja']}',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  SizedBox(height: 2),
+                                  Text(
+                                    'Kasir: ${transaksi['Kasir']}',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ],
                               ),
-                              SizedBox(width: 10), // Jarak antara text dan arrow
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.black,
-                                size: 20, // Ukuran ikon diperkecil
-                              ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(width: 10),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  }).toList(),
-                ),
+                    ),
+                  );
+                }).toList(),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 
 }

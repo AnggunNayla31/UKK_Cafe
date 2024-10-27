@@ -243,86 +243,101 @@ class DaftarTransaksi extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Daftar Transaksi', 
-        style: TextStyle(
-        color: Colors.white,)
-        ),
-        backgroundColor: Color(0xFF8B0000),
-      ),
-      
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: transaksiList.asMap().entries.map((entry) {
-              int index = entry.key;
-              var transaksi = entry.value;
-
-              // Menentukan warna berdasarkan status
-              Color statusColor = transaksi['status'] == 'Lunas' ? Colors.green : Colors.red;
-
-              return Card(
-                margin: EdgeInsets.symmetric(vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      '${index + 1}. ${transaksi['namaPelanggan']}',
-                                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black), // Hitam
-                                    ),
-                                    SizedBox(width: 4),
-                                    Text(
-                                      '-',
-                                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black), // Tanda penghubung hitam
-                                    ),
-                                    SizedBox(width: 4),
-                                    Text(
-                                      '${transaksi['status']}',
-                                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: statusColor), // Warna sesuai status
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 4),
-                                Text('Tanggal : ${transaksi['tanggal']}', style: TextStyle(fontSize: 14)),
-                                SizedBox(height: 2),
-                                Text('Nomor Meja : ${transaksi['nomorMeja']}', style: TextStyle(fontSize: 14)),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.arrow_forward),
-                        onPressed: () {
-                          _showDetails(context, transaksi);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
+ @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      automaticallyImplyLeading: false, // Menghilangkan ikon panah hitam
+      title: Row(
+        children: [
+          IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white), // Ikon panah berwarna putih
+            onPressed: () {
+              Navigator.pop(context); // Kembali ke halaman sebelumnya
+            },
           ),
+          SizedBox(width: 8), // Jarak antara ikon dan judul
+          Text(
+            'Daftar Transaksi', 
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: Color(0xFF8B0000),
+    ),
+    
+    body: Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: SingleChildScrollView(
+        child: Column(
+          children: transaksiList.asMap().entries.map((entry) {
+            int index = entry.key;
+            var transaksi = entry.value;
+
+            // Menentukan warna berdasarkan status
+            Color statusColor = transaksi['status'] == 'Lunas' ? Colors.green : Colors.red;
+
+            return Card(
+              margin: EdgeInsets.symmetric(vertical: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    '${index + 1}. ${transaksi['namaPelanggan']}',
+                                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black), // Hitam
+                                  ),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    '-',
+                                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black), // Tanda penghubung hitam
+                                  ),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    '${transaksi['status']}',
+                                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: statusColor), // Warna sesuai status
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 4),
+                              Text('Tanggal : ${transaksi['tanggal']}', style: TextStyle(fontSize: 14)),
+                              SizedBox(height: 2),
+                              Text('Nomor Meja : ${transaksi['nomorMeja']}', style: TextStyle(fontSize: 14)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.arrow_forward),
+                      onPressed: () {
+                        _showDetails(context, transaksi);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 }

@@ -1,6 +1,12 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:kasir_cafe/Login_page2.dart';
+import 'package:kasir_cafe/controllers/login_controller.dart';
 import 'package:kasir_cafe/services/base_url.dart';
+import 'package:kasir_cafe/services/meja.dart';
 import 'package:kasir_cafe/services/menu.dart';
+import 'package:kasir_cafe/services/pesan.dart';
 import 'daftar_transaksi.dart';
 import 'package:kasir_cafe/Noted.dart';
 
@@ -40,6 +46,17 @@ class _MenuListState extends State<MenuList> {
   // ];
   List? foodItems;
   MenuService menu = MenuService();
+  Pesan pesan = Pesan();
+  Meja meja = Meja();
+  List dataMeja = [];
+  var selectedTable;
+  TextEditingController customer_name = TextEditingController();
+  LoginController dataLogin = LoginController();
+  final formKey = GlobalKey<FormState>();
+  List? chart = [];
+  String messageError = '';
+
+  Map<String, dynamic> itemCountsBytitle = {};
 
   List<int> itemCounts = [];
   List selectedItems = [];
@@ -52,30 +69,78 @@ class _MenuListState extends State<MenuList> {
       foodItems = data['data'];
       itemCounts = List.generate(foodItems!.length, (index) => 0);
     });
-    print(foodItems);
-    print(itemCounts);
+    // print(foodItems);
+    // print(itemCounts);
+  }
+
+  getmejaAvailable() async {
+    var dataMejaAvailabe = await meja.mejaAvailable();
+    setState(() {
+      dataMeja = dataMejaAvailabe;
+    });
   }
 
   @override
   void initState() {
     super.initState();
     getMenu();
+    getmejaAvailable();
+    print(dataMeja);
 
     // itemCounts = List.generate(foodItems!.length , (index) => 0);
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Daftar Menu',
-            style: TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
-        backgroundColor: Color(0xFF8B0000),
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text(
+        'Daftar Menu',
+        style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
+      backgroundColor: Color(0xFF8B0000),
+      actions: [
+        // Menambahkan ikon profil
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0), // Menambahkan padding kanan
+          child: PopupMenuButton<String>(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            icon: Icon(Icons.person, color: Colors.white), // Ikon berwarna putih
+            onSelected: (String result) {
+              if (result == 'Logout') {
+                // Logika untuk logout dan mengarahkan ke halaman login
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Login_Page2(), // Ganti dengan halaman login yang sesuai
+                  ),
+                );
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'Logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout, size: 20, color: Colors.black),
+                    SizedBox(width: 8),
+                    Text('Logout'),
+                  ],
+                ),
+              ),
+            ],
+            offset: Offset(0, 50),
+          ),
+        ),
+      ],
+    ),
+    body: Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Form(
+              key: formKey,
               child: Column(
                 children: [
                   Padding(
@@ -138,7 +203,7 @@ class _MenuListState extends State<MenuList> {
                                   child: Icon(Icons.search, color: Colors.grey),
                                 ),
                                 filled: true,
-                                fillColor: Colors.grey[200],
+                                fillColor: const Color.fromARGB(255, 255, 255, 255),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30.0),
                                   borderSide: BorderSide.none,
@@ -160,7 +225,7 @@ class _MenuListState extends State<MenuList> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Makanan',
+                        'Makanan & Minuman',
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
@@ -182,29 +247,67 @@ class _MenuListState extends State<MenuList> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Minuman',
+                        'Nomor Meja',
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
-                  // ListView.builder(
-                  //   physics: NeverScrollableScrollPhysics(),
-                  //   shrinkWrap: true,
-                  //   itemCount: drinkItems.length,
-                  //   itemBuilder: (context, index) {
-                  //     return menuItem(drinkItems[index], foodItems.length + index);
-                  //   },
-                  // ),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    child: dataMeja != null
+                        ? DropdownButtonFormField(
+                            isExpanded: true,
+                            value: selectedTable,
+                            items: dataMeja.map((r) {
+                              return DropdownMenuItem<String>(
+                                child: Text(r["table_number"].toString()),
+                                value: r["table_id"].toString(),
+                              );
+                            }).toList(),
+                            onChanged: (val) {
+                              setState(() {
+                                selectedTable = val;
+                              });
+                            },
+                            hint: Text("Pilih Meja"),
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Meja harus diisi';
+                              } else {
+                                return null;
+                              }
+                            },
+                          )
+                        : Text(""),
+                  ),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    child: TextFormField(
+                      controller: customer_name,
+                      decoration:
+                          InputDecoration(label: Text("Nama Pelanggan")),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Nama Pelanggan harus diisi';
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
-          if (selectedItems.isNotEmpty) _buildSelectedItems(),
-        ],
-      ),
-    );
-  }
+        ),
+        if (selectedItems.isNotEmpty) _buildSelectedItems(),
+      ],
+    ),
+  );
+}
 
   Widget menuItem(item, int index) {
     return Container(
@@ -264,9 +367,35 @@ class _MenuListState extends State<MenuList> {
                     setState(() {
                       if (itemCounts[index] > 0) {
                         itemCounts[index]--;
+                        totalAmount -= int.parse(item['price'].toString());
+                        // for (var item2 in selectedItems) {
+                        // Menghitung jumlah item yang sama
+                        itemCountsBytitle[item["menu_name"]] = {
+                          'menu_id': item["menu_id"],
+                          'quantity': (itemCountsBytitle.isNotEmpty
+                                  ? itemCountsBytitle[item["menu_name"]] != null
+                                      ? itemCountsBytitle[item["menu_name"]]
+                                          ["quantity"]
+                                      : 0
+                                  : 0) -
+                              1
+                        };
+                        ;
+                        // }
                         if (itemCounts[index] == 0) {
                           selectedItems.remove(item);
-                          totalAmount -= int.parse(item['price'].toString());
+                          // totalAmount -= int.parse(item['price'].toString());
+                          totalAmount = 0;
+                          // for (var item2 in selectedItems) {
+                          // Menghitung jumlah item yang sama
+
+                          // itemCountsBytitle[item["menu_name"]] =
+                          //     (itemCountsBytitle[item["menu_name"]] ?? 0);
+                          itemCountsBytitle[item["menu_name"]] = {
+                            'menu_id': item["menu_id"],
+                            'quantity': 0,
+                          };
+                          // }
                         }
                       }
                     });
@@ -293,6 +422,22 @@ class _MenuListState extends State<MenuList> {
                       itemCounts[index]++;
                       selectedItems.add(item);
                       totalAmount += int.parse(item['price'].toString());
+                      // for (var item2 in selectedItems) {
+                      // Menghitung jumlah item yang sama
+
+                      // itemCountsBytitle[item["menu_name"]] =
+                      //     (itemCountsBytitle[item["menu_name"]] ?? 0) + 1;
+                      itemCountsBytitle[item["menu_name"]] = {
+                        'menu_id': item["menu_id"],
+                        'quantity': (itemCountsBytitle.isNotEmpty
+                                ? itemCountsBytitle[item["menu_name"]] != null
+                                    ? itemCountsBytitle[item["menu_name"]]
+                                        ["quantity"]
+                                    : 0
+                                : 0) +
+                            1
+                      };
+                      // }
                     });
                   },
                   child: Container(
@@ -395,15 +540,16 @@ class _MenuListState extends State<MenuList> {
 
   Widget _buildSelectedItems() {
     // Menghitung jumlah item yang dipesan
-    Map<String, int> itemCounts = {};
+    // Map<String, int> itemCounts = {};
 
-    for (var item in selectedItems) {
-      // Menghitung jumlah item yang sama
-      itemCounts[item["menu_name"]] = (itemCounts[item["menu_name"]] ?? 0) + 1;
-    }
+    // for (var item in selectedItems) {
+    //   // Menghitung jumlah item yang sama
+    //   itemCounts[item["menu_name"]] = (itemCounts[item["menu_name"]] ?? 0) + 1;
+    // }
 
     // Menghapus item dari daftar jika jumlahnya 0
-    selectedItems.removeWhere((item) => itemCounts[item["menu_name"]] == 0);
+    selectedItems.removeWhere(
+        (item) => itemCountsBytitle[item["menu_name"]]["quantity"] == 0);
 
     // Jika tidak ada item yang dipilih, kembalikan widget kosong
     if (selectedItems.isEmpty) {
@@ -411,119 +557,127 @@ class _MenuListState extends State<MenuList> {
     }
 
     return Container(
-      padding: EdgeInsets.all(16.0),
-      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 15.0,
-            offset: Offset(0, 8),
-          ),
-        ],
+  padding: EdgeInsets.all(16.0),
+  margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(16.0),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.3),
+        blurRadius: 15.0,
+        offset: Offset(0, 8),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Nama Pelanggan
-            SizedBox(
-              width: double.infinity,
-              child: Text(
-                'Nama Pelanggan : $customerName',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(height: 8),
+    ],
+  ),
+  child: SingleChildScrollView(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Total Harga
+        Text(
+          'Total : Rp $totalAmount',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        ),
+        Divider(thickness: 1, color: Colors.black),
+        SizedBox(height: 8),
 
-            // Nomor Meja
-            SizedBox(
-              width: double.infinity,
-              child: Text(
-                'Nomor Meja : $tableNumber',
-                style: TextStyle(fontSize: 15),
-              ),
-            ),
-            SizedBox(height: 8),
-
-            // Total Harga
-            Text(
-              'Total: Rp $totalAmount',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            ),
-            Divider(thickness: 1, color: Colors.black),
-            SizedBox(height: 8),
-
-            // Menampilkan item yang dipilih dengan jumlah yang dipesan
-            ...itemCounts.keys.map((itemTitle) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.start, // Gak terlalu rapat
-                  children: [
-                    // Nama menu
-                    Text(
-                      itemTitle,
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    SizedBox(
-                        width: 8), // Sedikit jarak antara nama menu dan jumlah
-
-                    // Menampilkan jumlah pesanan
-                    Text(
-                      itemCounts[itemTitle] == 1
-                          ? '1x'
-                          : '${itemCounts[itemTitle]}x', // Format: 2x bukan x2
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    ),
-                    Spacer(), // Memberi jarak antara jumlah dan harga
-
-                    // Harga per item
-                    Text(
-                      selectedItems
-                          .firstWhere(
-                              (item) => item["menu_name"] == itemTitle)["price"]
-                          .toString(),
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    ),
-                  ],
+        // Menampilkan item yang dipilih dengan jumlah yang dipesan
+        ...itemCountsBytitle.keys.map((itemTitle) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Row(
+              mainAxisAlignment:
+                  MainAxisAlignment.start, // Gak terlalu rapat
+              children: [
+                // Nama menu
+                Text(
+                  itemTitle,
+                  style: TextStyle(fontSize: 14),
                 ),
-              );
-            }),
+                SizedBox(width: 8), // Sedikit jarak antara nama menu dan jumlah
 
-            SizedBox(height: 16),
+                // Menampilkan jumlah pesanan
+                Text(
+                  itemCountsBytitle[itemTitle]["quantity"] == 1
+                      ? '1x'
+                      : '${itemCountsBytitle[itemTitle]["quantity"]}x', // Format: 2x bukan x2
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                ),
+                Spacer(), // Memberi jarak antara jumlah dan harga
 
-            // Tombol untuk memesan
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
+                // Harga per item
+                Text(
+                  (itemCountsBytitle[itemTitle]["quantity"]! *
+                          selectedItems.firstWhere((item) =>
+                              item["menu_name"] == itemTitle)["price"])
+                      .toString(),
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                ),
+              ],
+            ),
+          );
+        }),
+
+        SizedBox(height: 16),
+
+        // Tombol untuk memesan
+        Center(
+          child: ElevatedButton(
+            onPressed: () async {
+              if (formKey.currentState!.validate()) {
+                // itemCountsBytitle.keys.map((itemTitle) {
+                for (var itemTitle in itemCountsBytitle.keys) {
+                  chart!.add({
+                    'menu_id': itemCountsBytitle[itemTitle]["menu_id"],
+                    'quantity': itemCountsBytitle[itemTitle]["quantity"]
+                  });
+                }
+                var user = await dataLogin.getDataLogin();
+                var data = {
+                  "user_id": user!.id_user,
+                  "table_id": selectedTable,
+                  "customer_name": customer_name.text,
+                  "detail": chart,
+                };
+                // print(data);
+
+                var result = await pesan.simpanPesan(data);
+                if (result["status"] == "success") {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Noted(), // Navigasi ke kelas Noted
+                      builder: (context) =>
+                          Noted(), // Navigasi ke kelas Noted
                     ),
                   );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF8B0000),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
-                ),
-                child: Text(
-                  'Pesan Sekarang',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
+                } else {
+                  setState(() {
+                    messageError = 'Gagal memesan';
+                  });
+                }
+                print(result);
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFF8B0000),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
               ),
-            )
-          ],
+              padding:
+                  EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
+            ),
+            child: Text(
+              'Pesan Sekarang',
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+          ),
         ),
-      ),
-    );
+        Text(messageError),
+      ],
+    ),
+  ),
+);
+
   }
 }
