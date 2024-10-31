@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:kasir_cafe/Login_page2.dart';
 import 'package:kasir_cafe/controllers/login_controller.dart';
@@ -89,225 +87,231 @@ class _MenuListState extends State<MenuList> {
 
     // itemCounts = List.generate(foodItems!.length , (index) => 0);
   }
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text(
-        'Daftar Menu',
-        style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-      ),
-      backgroundColor: Color(0xFF8B0000),
-      actions: [
-        // Menambahkan ikon profil
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0), // Menambahkan padding kanan
-          child: PopupMenuButton<String>(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-            icon: Icon(Icons.person, color: Colors.white), // Ikon berwarna putih
-            onSelected: (String result) {
-              if (result == 'Logout') {
-                // Logika untuk logout dan mengarahkan ke halaman login
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Login_Page2(), // Ganti dengan halaman login yang sesuai
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Daftar Menu',
+          style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+        ),
+        backgroundColor: Color(0xFF8B0000),
+        actions: [
+          // Menambahkan ikon profil
+          Padding(
+            padding:
+                const EdgeInsets.only(right: 16.0), // Menambahkan padding kanan
+            child: PopupMenuButton<String>(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              icon: Icon(Icons.person,
+                  color: Colors.white), // Ikon berwarna putih
+              onSelected: (String result) {
+                if (result == 'Logout') {
+                  // Logika untuk logout dan mengarahkan ke halaman login
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          Login_Page2(), // Ganti dengan halaman login yang sesuai
+                    ),
+                  );
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'Logout',
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout, size: 20, color: Colors.black),
+                      SizedBox(width: 8),
+                      Text('Logout'),
+                    ],
                   ),
-                );
-              }
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                value: 'Logout',
-                child: Row(
+                ),
+              ],
+              offset: Offset(0, 50),
+            ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Form(
+                key: formKey,
+                child: Column(
                   children: [
-                    Icon(Icons.logout, size: 20, color: Colors.black),
-                    SizedBox(width: 8),
-                    Text('Logout'),
+                    Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          PopupMenuButton<String>(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            icon: Icon(Icons.more_vert, color: Colors.grey),
+                            onSelected: (String result) {
+                              if (result == 'Daftar Transaksi') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DaftarTransaksi(), // Mengarahkan ke DaftarTransaksi
+                                  ),
+                                );
+                              }
+                            },
+                            itemBuilder: (BuildContext context) =>
+                                <PopupMenuEntry<String>>[
+                              const PopupMenuItem<String>(
+                                value: 'Daftar Transaksi',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.receipt_long,
+                                        size: 20, color: Colors.black),
+                                    SizedBox(width: 8),
+                                    Text('Daftar Transaksi'),
+                                  ],
+                                ),
+                              ),
+                            ],
+                            offset: Offset(0, 50),
+                          ),
+                          SizedBox(width: 15),
+                          Expanded(
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[100],
+                                borderRadius: BorderRadius.circular(30.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 5.0,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                  hintText: 'Cari...',
+                                  prefixIcon: Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 10.0, left: 20.0),
+                                    child:
+                                        Icon(Icons.search, color: Colors.grey),
+                                  ),
+                                  filled: true,
+                                  fillColor:
+                                      const Color.fromARGB(255, 255, 255, 255),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 8.0),
+                                ),
+                                cursorColor: Colors.black,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Makanan & Minuman',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    foodItems != null
+                        ? ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: foodItems!.length,
+                            itemBuilder: (context, index) {
+                              return menuItem(foodItems![index], index);
+                            },
+                          )
+                        : Text('data kosong'),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Nomor Meja',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: dataMeja != null
+                          ? DropdownButtonFormField(
+                              isExpanded: true,
+                              value: selectedTable,
+                              items: dataMeja.map((r) {
+                                return DropdownMenuItem<String>(
+                                  child: Text(r["table_number"].toString()),
+                                  value: r["table_id"].toString(),
+                                );
+                              }).toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  selectedTable = val;
+                                });
+                              },
+                              hint: Text("Pilih Meja"),
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Meja harus diisi';
+                                } else {
+                                  return null;
+                                }
+                              },
+                            )
+                          : Text(""),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: TextFormField(
+                        controller: customer_name,
+                        decoration:
+                            InputDecoration(label: Text("Nama Pelanggan")),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Nama Pelanggan harus diisi';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ],
-            offset: Offset(0, 50),
-          ),
-        ),
-      ],
-    ),
-    body: Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Form(
-              key: formKey,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        PopupMenuButton<String>(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          icon: Icon(Icons.more_vert, color: Colors.grey),
-                          onSelected: (String result) {
-                            if (result == 'Daftar Transaksi') {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      DaftarTransaksi(), // Mengarahkan ke DaftarTransaksi
-                                ),
-                              );
-                            }
-                          },
-                          itemBuilder: (BuildContext context) =>
-                              <PopupMenuEntry<String>>[
-                            const PopupMenuItem<String>(
-                              value: 'Daftar Transaksi',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.receipt_long,
-                                      size: 20, color: Colors.black),
-                                  SizedBox(width: 8),
-                                  Text('Daftar Transaksi'),
-                                ],
-                              ),
-                            ),
-                          ],
-                          offset: Offset(0, 50),
-                        ),
-                        SizedBox(width: 15),
-                        Expanded(
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(30.0),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 5.0,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: 'Cari...',
-                                prefixIcon: Padding(
-                                  padding: const EdgeInsets.only(
-                                      right: 10.0, left: 20.0),
-                                  child: Icon(Icons.search, color: Colors.grey),
-                                ),
-                                filled: true,
-                                fillColor: const Color.fromARGB(255, 255, 255, 255),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  borderSide: BorderSide.none,
-                                ),
-                                contentPadding:
-                                    EdgeInsets.symmetric(vertical: 8.0),
-                              ),
-                              cursorColor: Colors.black,
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Makanan & Minuman',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  foodItems != null
-                      ? ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: foodItems!.length,
-                          itemBuilder: (context, index) {
-                            return menuItem(foodItems![index], index);
-                          },
-                        )
-                      : Text('data kosong'),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Nomor Meja',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: dataMeja != null
-                        ? DropdownButtonFormField(
-                            isExpanded: true,
-                            value: selectedTable,
-                            items: dataMeja.map((r) {
-                              return DropdownMenuItem<String>(
-                                child: Text(r["table_number"].toString()),
-                                value: r["table_id"].toString(),
-                              );
-                            }).toList(),
-                            onChanged: (val) {
-                              setState(() {
-                                selectedTable = val;
-                              });
-                            },
-                            hint: Text("Pilih Meja"),
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Meja harus diisi';
-                              } else {
-                                return null;
-                              }
-                            },
-                          )
-                        : Text(""),
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: TextFormField(
-                      controller: customer_name,
-                      decoration:
-                          InputDecoration(label: Text("Nama Pelanggan")),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Nama Pelanggan harus diisi';
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
-        ),
-        if (selectedItems.isNotEmpty) _buildSelectedItems(),
-      ],
-    ),
-  );
-}
+          if (selectedItems.isNotEmpty) _buildSelectedItems(),
+        ],
+      ),
+    );
+  }
 
   Widget menuItem(item, int index) {
     return Container(
@@ -557,129 +561,137 @@ Widget build(BuildContext context) {
     }
 
     return Container(
-  padding: EdgeInsets.all(16.0),
-  margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-  decoration: BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(16.0),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.3),
-        blurRadius: 15.0,
-        offset: Offset(0, 8),
+      padding: EdgeInsets.all(16.0),
+      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 15.0,
+            offset: Offset(0, 8),
+          ),
+        ],
       ),
-    ],
-  ),
-  child: SingleChildScrollView(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Total Harga
-        Text(
-          'Total : Rp $totalAmount',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-        ),
-        Divider(thickness: 1, color: Colors.black),
-        SizedBox(height: 8),
-
-        // Menampilkan item yang dipilih dengan jumlah yang dipesan
-        ...itemCountsBytitle.keys.map((itemTitle) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 4.0),
-            child: Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.start, // Gak terlalu rapat
-              children: [
-                // Nama menu
-                Text(
-                  itemTitle,
-                  style: TextStyle(fontSize: 14),
-                ),
-                SizedBox(width: 8), // Sedikit jarak antara nama menu dan jumlah
-
-                // Menampilkan jumlah pesanan
-                Text(
-                  itemCountsBytitle[itemTitle]["quantity"] == 1
-                      ? '1x'
-                      : '${itemCountsBytitle[itemTitle]["quantity"]}x', // Format: 2x bukan x2
-                  style: TextStyle(fontWeight: FontWeight.normal),
-                ),
-                Spacer(), // Memberi jarak antara jumlah dan harga
-
-                // Harga per item
-                Text(
-                  (itemCountsBytitle[itemTitle]["quantity"]! *
-                          selectedItems.firstWhere((item) =>
-                              item["menu_name"] == itemTitle)["price"])
-                      .toString(),
-                  style: TextStyle(fontWeight: FontWeight.normal),
-                ),
-              ],
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Total Harga
+            Text(
+              'Total : Rp $totalAmount',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
-          );
-        }),
+            Divider(thickness: 1, color: Colors.black),
+            SizedBox(height: 8),
 
-        SizedBox(height: 16),
+            // Menampilkan item yang dipilih dengan jumlah yang dipesan
+            ...itemCountsBytitle.keys.map((itemTitle) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 4.0),
+                child: Row(
+                  mainAxisAlignment:
+                      MainAxisAlignment.start, // Gak terlalu rapat
+                  children: [
+                    // Nama menu
+                    Text(
+                      itemTitle,
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    SizedBox(
+                        width: 8), // Sedikit jarak antara nama menu dan jumlah
 
-        // Tombol untuk memesan
-        Center(
-          child: ElevatedButton(
-            onPressed: () async {
-              if (formKey.currentState!.validate()) {
-                // itemCountsBytitle.keys.map((itemTitle) {
-                for (var itemTitle in itemCountsBytitle.keys) {
-                  chart!.add({
-                    'menu_id': itemCountsBytitle[itemTitle]["menu_id"],
-                    'quantity': itemCountsBytitle[itemTitle]["quantity"]
-                  });
-                }
-                var user = await dataLogin.getDataLogin();
-                var data = {
-                  "user_id": user!.id_user,
-                  "table_id": selectedTable,
-                  "customer_name": customer_name.text,
-                  "detail": chart,
-                };
-                // print(data);
+                    // Menampilkan jumlah pesanan
+                    Text(
+                      itemCountsBytitle[itemTitle]["quantity"] == 1
+                          ? '1x'
+                          : '${itemCountsBytitle[itemTitle]["quantity"]}x', // Format: 2x bukan x2
+                      style: TextStyle(fontWeight: FontWeight.normal),
+                    ),
+                    Spacer(), // Memberi jarak antara jumlah dan harga
 
-                var result = await pesan.simpanPesan(data);
-                if (result["status"] == "success") {
-                  Navigator.push(
+                    // Harga per item
+                    Text(
+                      (itemCountsBytitle[itemTitle]["quantity"]! *
+                              selectedItems.firstWhere((item) =>
+                                  item["menu_name"] == itemTitle)["price"])
+                          .toString(),
+                      style: TextStyle(fontWeight: FontWeight.normal),
+                    ),
+                  ],
+                ),
+              );
+            }),
+
+            SizedBox(height: 16),
+
+            // Tombol untuk memesan
+            Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    // itemCountsBytitle.keys.map((itemTitle) {
+                    for (var itemTitle in itemCountsBytitle.keys) {
+                      chart!.add({
+                        'menu_id': itemCountsBytitle[itemTitle]["menu_id"],
+                        'quantity': itemCountsBytitle[itemTitle]["quantity"]
+                      });
+                    }
+                    var user = await dataLogin.getDataLogin();
+                    var data = {
+                      "user_id": user!.id_user,
+                      "table_id": selectedTable,
+                      "customer_name": customer_name.text,
+                      "detail": chart,
+                    };
+                    // print(data);
+
+                    var result = await pesan.simpanPesan(data);
+                    if (result["status"] == "success") {
+                    Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          Noted(), // Navigasi ke kelas Noted
+                      builder: (context) => NotaPage(
+                        menuItems: selectedItems, // Ganti dengan daftar menu yang dipilih
+                        date: result["data"]["order"]["order_date"] ?? '',
+                        customerName: customerName.isNotEmpty ? customerName : 'Dinaa',
+                        tableNumber: tableNumber.isNotEmpty ? tableNumber : '69',
+                        cashierName: result["data"]["order"]["cashier_name"] ?? 'Nayla',
+                      ),
                     ),
                   );
-                } else {
-                  setState(() {
-                    messageError = 'Gagal memesan';
-                  });
-                }
-                print(result);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF8B0000),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              padding:
-                  EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
-            ),
-            child: Text(
-              'Pesan Sekarang',
-              style: TextStyle(fontSize: 16, color: Colors.white),
-            ),
-          ),
-        ),
-        Text(messageError),
-      ],
-    ),
-  ),
-);
 
+
+
+                    } else {
+                      setState(() {
+                        messageError = 'Gagal memesan';
+                      });
+                    }
+                    print(result);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF8B0000),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
+                ),
+                child: Text(
+                  'Pesan Sekarang',
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
+              ),
+            ),
+            Text(messageError),
+          ],
+        ),
+      ),
+    );
   }
-  
+
   Noted() {}
 }
