@@ -22,6 +22,8 @@ class MenuList extends StatefulWidget {
 
   @override
   _MenuListState createState() => _MenuListState();
+
+  static where(Function(dynamic item) param0) {}
 }
 
 class _MenuListState extends State<MenuList> {
@@ -49,6 +51,9 @@ class _MenuListState extends State<MenuList> {
   List dataMeja = [];
   var selectedTable;
   TextEditingController customer_name = TextEditingController();
+  TextEditingController tableNumberController = TextEditingController(); // Untuk nomor meja
+  TextEditingController cashierNameController = TextEditingController();  // Untuk nama kasir
+
   LoginController dataLogin = LoginController();
   final formKey = GlobalKey<FormState>();
   List? chart = [];
@@ -645,26 +650,26 @@ class _MenuListState extends State<MenuList> {
                       "customer_name": customer_name.text,
                       "detail": chart,
                     };
-                    // print(data);
-
-                    var result = await pesan.simpanPesan(data);
+                   var result = await pesan.simpanPesan(data);
                     if (result["status"] == "success") {
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NotaPage(
-                        menuItems: selectedItems, // Ganti dengan daftar menu yang dipilih
-                        date: result["data"]["order"]["order_date"] ?? '',
-                        customerName: customerName.isNotEmpty ? customerName : 'Dinaa',
-                        tableNumber: tableNumber.isNotEmpty ? tableNumber : '69',
-                        cashierName: result["data"]["order"]["cashier_name"] ?? 'Nayla',
-                      ),
-                    ),
-                  );
+                      // Mengambil detail dari hasil pemesanan
+                      var menuItems = result["data"]["detail"];
 
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NotaPage(
+                            menuItems: menuItems,
+                            date: result["data"]["order"]["order_date"],
+                            customerName: result["data"]["order"]["customer_name"],
+                            tableNumber: "194", // Ganti dengan nomor meja yang sesuai
+                            cashierName: "Nayla", // Ganti dengan nama kasir yang sesuai
+                          ),
+                        ),
+                      );
 
-
-                    } else {
+                    }
+                     else {
                       setState(() {
                         messageError = 'Gagal memesan';
                       });

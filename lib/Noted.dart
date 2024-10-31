@@ -1,100 +1,138 @@
 import 'package:flutter/material.dart';
+import 'package:kasir_cafe/Login_page2.dart';
 
 class NotaPage extends StatelessWidget {
   final String date;
   final String customerName;
   final List menuItems;
-  final String tableNumber; // Menambahkan Nomor Meja
-  final String cashierName; // Menambahkan Nama Kasir
+  final String tableNumber; // Tambahkan parameter untuk nomor meja
+  final String cashierName; // Tambahkan parameter untuk nama kasir
 
   NotaPage({
     required this.date,
     required this.customerName,
     required this.menuItems,
-    required this.tableNumber,
-    required this.cashierName,
+    required this.tableNumber, // Terima parameter nomor meja
+    required this.cashierName,  // Terima parameter nama kasir
   });
 
   @override
   Widget build(BuildContext context) {
-    double totalPrice = menuItems.fold(0, (sum, item) => sum + item["price"]);
+    double totalPrice = menuItems.fold(0, (sum, item) => sum + (item["price"] * item["quantity"]));
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 50), // Memberi jarak vertikal lebih ke bawah
-
-            // Informasi Cafe di Tengah
+            SizedBox(height: 40), // Jarak atas untuk menggeser konten ke bawah
             Center(
-              child: Column(
-                children: [
-                  Text(
-                    'WIKUSAMA CAFE',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 8), // Jarak antara nama cafe dan alamat
-                  Text(
-                    'Jl. Danau Ranau, Sawojajar, Kec. Kedungkandang, Kota Malang',
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8), // Jarak antara alamat dan garis
-                  Divider(thickness: 2, color: Colors.black), // Garis pembatas
-                ],
+              child: Text(
+                'WIKUSAMA CAFE',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(height: 20), // Jarak antara informasi cafe dan konten nota
+            Center(
+              child: Text(
+                'Jl. Danau Ranau, Sawojajar, Kec. Kedungkandang, Kota Malang',
+              ),
+            ),
+            SizedBox(height: 20), // Jarak setelah alamat
+            Container(
+              height: 2, // Atur tinggi garis
+              color: Colors.black, // Atur warna garis
+              margin: const EdgeInsets.symmetric(vertical: 10), // Jarak vertikal
+            ),
+            SizedBox(height: 20), // Jarak sebelum tanggal
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Tanggal :'),
+                Text(date), // Tanggal di sebelah kanan
+              ],
+            ),
+            SizedBox(height: 10), // Jarak setelah tanggal
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Nama Pelanggan :'),
+                Text(customerName), // Nama pelanggan di sebelah kanan
+              ],
+            ),
+            SizedBox(height: 10), // Jarak setelah nama pelanggan
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Nomor Meja :'),
+                Text(tableNumber), // Nomor meja di sebelah kanan
+              ],
+            ),
+            SizedBox(height: 10), // Jarak setelah nomor meja
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Kasir :'),
+                Text(cashierName), // Nama kasir di sebelah kanan
+              ],
+            ),
+            Container(
+              height: 2, // Atur tinggi garis
+              color: Colors.black, // Atur warna garis
+              margin: const EdgeInsets.symmetric(vertical: 10), // Jarak vertikal
+            ),
+            SizedBox(height: 10), // Jarak sebelum menu
 
-            // Informasi Tanggal, Nomor Meja, Nama Pelanggan, dan Kasir
-            Row(
+            // Menampilkan menu yang dipilih dan harganya
+            ...menuItems.where((item) => item["quantity"] > 0).map((item) => Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Tanggal:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)), // Ukuran font ditambahkan
-                Text(date, style: TextStyle(fontSize: 18)), // Ukuran font ditambahkan
+                Text('${item[""]} ${item["quantity"]} x'),
+                Text('Rp. ${item["price"].toStringAsFixed(2)}'), // Harga di sebelah kanan
               ],
-            ),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Nomor Meja:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)), // Ukuran font ditambahkan
-                Text(tableNumber, style: TextStyle(fontSize: 18)), // Ukuran font ditambahkan
-              ],
-            ),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Nama Pelanggan:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)), // Ukuran font ditambahkan
-                Text(customerName, style: TextStyle(fontSize: 18)), // Ukuran font ditambahkan
-              ],
-            ),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Kasir:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)), // Ukuran font ditambahkan
-                Text(cashierName, style: TextStyle(fontSize: 18)), // Ukuran font ditambahkan
-              ],
-            ),
-            SizedBox(height: 8),
-            Divider(thickness: 2, color: Colors.black), // Garis tebal di bawah informasi kasir
-            SizedBox(height: 20), // Jarak antara informasi dan daftar menu
+            )).toList(),
 
-            // Daftar Menu
-            Text('Menu:', style: TextStyle(fontWeight: FontWeight.bold)),
-            ...menuItems.map((item) => Text('${item["name"]} - Rp ${item["price"].toStringAsFixed(2)}')),
-            Divider(),
-            Text(
-              'Total: Rp ${totalPrice.toStringAsFixed(2)}',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            SizedBox(height: 10), // Jarak setelah daftar menu
+            
+            // Garis pemisah untuk total
+            Container(
+              height: 2,
+              color: Colors.black,
+              margin: const EdgeInsets.symmetric(vertical: 10), // Jarak vertikal
             ),
+            SizedBox(height: 10), // Jarak sebelum total
+            
+            // Menampilkan total harga di sebelah kanan
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Total:'),
+                Text('${totalPrice.toStringAsFixed(2)}'), // Total harga di sebelah kanan
+              ],
+            ),
+
+            Spacer(), // Menambahkan ruang kosong agar tombol berada di bawah
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0), // Jarak dari sisi kiri
+              child: ElevatedButton(
+                onPressed: () {
+                  // Kembali ke halaman login dan menghapus semua halaman sebelumnya
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => Login_Page2()), // Ganti dengan halaman login Anda
+                    (route) => false, // Menghapus semua rute sebelumnya
+                  );
+                },
+                child: Text(
+                  'Exit',
+                  style: TextStyle(color: Colors.white), // Atur warna teks tombol menjadi putih
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF8B0000), // Atur warna latar belakang tombol
+                ),
+              ),
+            ),
+            SizedBox(height: 20), // Jarak sebelum batas bawah
           ],
         ),
       ),
